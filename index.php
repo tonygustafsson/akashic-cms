@@ -1,4 +1,10 @@
 <?php
+	function getFileContent($file) {
+		ob_start();
+		include($file);
+		return ob_get_clean();
+	}
+
 	function getTemplate($matches) {
 		$file = $matches[1] . '.php';
 			
@@ -6,9 +12,7 @@
 			return 'Template "' . $file . '" does not exists.';
 		}
 		
-		ob_start();
-		include($file);
-		$newContent = ob_get_clean();
+		$newContent = getFileContent($file);
 		
 		if (preg_match('/\[\[(.*)\]\]/i', $newContent)) {
 			return processTemplateVars($newContent);
@@ -21,15 +25,7 @@
 		$includePattern = '/\[\[(.*)\]\]/i';
 		return preg_replace_callback($includePattern, 'getTemplate', $content);
 	}
-?>
 
-<?php
-	$content = '
-		<h1>SapCMS</h1>
-		[[books]]
-		
-		<p>End of file</p>
-	';
+	$content = getFileContent("start.php");
 
 	echo processTemplateVars($content);
-?>
