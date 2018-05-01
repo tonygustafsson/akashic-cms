@@ -16,8 +16,13 @@ class Akashic {
 			$content = $this->getFileContent("pages/start.php");
 			echo $this->processPageVars($content);
 		}
+		else if (file_exists("pages/" . $this->url_path . "/index.php")) {
+			// Special page, index.php
+			$content = $this->getFileContent("pages/" . $this->url_path . "/index.php");
+			echo $this->processPageVars($content);				
+		}
 		else if (file_exists("pages/" . $this->url_path . ".php")) {
-			// Special page
+			// Special page, directly to php
 			$content = $this->getFileContent("pages/" . $this->url_path . ".php");
 			echo $this->processPageVars($content);	
 		}
