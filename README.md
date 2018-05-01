@@ -4,11 +4,34 @@
 
 Not for production yet.
 
-## Include
+## Pages
 
-To include files, recursevly:
-[[path/subpath/file]]
-would include ./path/subpath/file.php.
+A routing system is included. All landing pages should exist in ./pages
+and is accessed through site-url/page that would get ./pages/page.php
+and site-url/sub/sub2 would get ./pages/sub/sub2/index.php.
+
+## Templates
+
+Templates exists in ./templates and can not be accessed directly with an URL.
+Instead it's defined on top of a page file as @{my-template} that would put all
+content of the page inside of ./templates/my-template.php. The placement for the
+content is defined inside the template as ${content}.
+
+## Include modules
+
+To include modules, recursevly:
+[[path/subpath/module]]
+would include module ./path/subpath/module.php.
+
+## Data stores
+
+Define a data store for a page with ##datastore##
+that would get ./data/datastore.json.
+Then use ${variable} to get variable from datastore.json.
+
+## Settings
+
+Edit global settings in ./settings.php.
 
 ## The future
 
