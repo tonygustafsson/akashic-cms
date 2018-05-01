@@ -72,15 +72,37 @@ class Akashic {
 	}
 	
 	private function processPageVars($content) {
-		$includePattern = '/\[\[(.*)\]\]/i';
-		$templatePattern = '/\@\{(.*)\}/i';
+		$include_pattern = '/\[\[(.*)\]\]/i';
+		$template_pattern = '/\@\{(.*)\}/i';
+		$data_store_pattern = '/\#\#(.*)\#\#/i';
+		$data_variable_pattern = '/\$\{(.*)\}/i';
 
-		$content = preg_replace_callback($includePattern, array($this, 'getModule'), $content);
+		$content = preg_replace_callback($include_pattern, array($this, 'getModule'), $content);
 
-		if (preg_match($templatePattern, $content)) {
-			// Has template
-			preg_match($templatePattern, $content, $matches);
-			$templateName = $matches[1];
+		preg_match($data_store_pattern, $content, $data_store_matches);
+
+		if (count($data_store_matches) > 0) {
+			$data_store_name = $data_store_matches[1];
+			$content = str_replace("##" . $data_store_name . "##", "", $content);
+			$data_store_content = $this->getFileContent('data/' . $data_store_name . '.json');
+			$data_store = json_decode($data_store_content);
+		}
+
+		preg_match_all($data_variable_pattern, $content, $data_vars_matches);
+
+		if (count($data_vars_matches) > 0) {
+			$data = $data_vars_matches[1];
+
+			foreach ($data as $var) {
+				$content = str_replace("\${" . $var . "}", $data_store->$var, $content);
+			}
+		}
+
+		preg_match($template_pattern, $content, $template_matches);
+
+		if (count($template_matches) > 0) {
+			// Has template, include content inside template
+			$templateName = $template_matches[1];
 			$templateContent = $this->getTemplate($templateName);
 			
 			$content = str_replace("@{" . $templateName . "}", "", $content);
