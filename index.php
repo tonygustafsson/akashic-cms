@@ -13,17 +13,17 @@ class Akashic {
 
 		if (count($this->url_segments) == 0) {
 			// Start page
-			$content = $this->getFileContent("start.php");
-			echo $this->processTemplateVars($content);
+			$content = $this->getFileContent("pages/start.php");
+			echo $this->processPageVars($content);
 		}
-		else if (file_exists($this->url_path . ".php")) {
+		else if (file_exists("pages/" . $this->url_path . ".php")) {
 			// Special page
-			$content = $this->getFileContent($this->url_path . ".php");
-			echo $this->processTemplateVars($content);	
+			$content = $this->getFileContent("pages/" . $this->url_path . ".php");
+			echo $this->processPageVars($content);	
 		}
 		else {
-			$content = $this->getFileContent("404.php");
-			echo $this->processTemplateVars($content);
+			$content = $this->getFileContent("pages/404.php");
+			echo $this->processPageVars($content);
 		}
 	}
 
@@ -33,8 +33,24 @@ class Akashic {
 		return ob_get_clean();
 	}
 
-	private function getTemplate($matches) {
-		$file = $matches[1] . '.php';
+	private function getModule($matches) {
+		$file = 'modules/' . $matches[1] . '.php';
+			
+		if (!file_exists($file)) {
+			return 'Include "' . $file . '" does not exists.';
+		}
+		
+		$newContent = $this->getFileContent($file);
+
+		if (preg_match('/\[\[(.*)\]\]/i', $newContent)) {
+			return $this->processPageVars($newContent);
+		}
+		
+		return $newContent;
+	}
+
+	private function getTemplate($templateName) {
+		$file = 'templates/' . $templateName . '.php';
 			
 		if (!file_exists($file)) {
 			return 'Template "' . $file . '" does not exists.';
@@ -42,16 +58,26 @@ class Akashic {
 		
 		$newContent = $this->getFileContent($file);
 		
-		if (preg_match('/\[\[(.*)\]\]/i', $newContent)) {
-			return $this->processTemplateVars($newContent);
-		}
-		
 		return $newContent;
 	}
 	
-	private function processTemplateVars($content) {
+	private function processPageVars($content) {
 		$includePattern = '/\[\[(.*)\]\]/i';
-		return preg_replace_callback($includePattern, array($this, 'getTemplate'), $content);
+		$templatePattern = '/\@\{(.*)\}/i';
+
+		$content = preg_replace_callback($includePattern, array($this, 'getModule'), $content);
+
+		if (preg_match($templatePattern, $content)) {
+			// Has template
+			preg_match($templatePattern, $content, $matches);
+			$templateName = $matches[1];
+			$templateContent = $this->getTemplate($templateName);
+			
+			$content = str_replace("@{" . $templateName . "}", "", $content);
+			$content = str_replace("@{content}", $content, $templateContent);
+		}
+
+		return $content;
 	}
 }
 
