@@ -1,6 +1,4 @@
 {
-    "test": "This is from a data store!",
-    "test2": "Walla walla bing bing",
     "persons": [
         {
             "name": "Tony Gustafsson",

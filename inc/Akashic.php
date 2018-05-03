@@ -47,7 +47,7 @@ class Akashic {
 		$file = 'modules/' . $matches[1] . '.php';
 			
 		if (!file_exists($file)) {
-			return 'Include "' . $file . '" does not exists.';
+			return 'Module "' . $file . '" does not exists.';
 		}
 		
 		$newContent = $this->getFileContent($file);
@@ -72,15 +72,17 @@ class Akashic {
 	}
 	
 	private function processPageVars($content) {
-		$include_pattern = '/\[\[(.*)\]\]/i';
+		$module_pattern = '/\[\[(.*)\]\]/i';
 		$template_pattern = '/\@\{(.*)\}/i';
 		$data_store_pattern = '/\#\#(.*)\#\#/i';
 		$data_variable_pattern = '/\$\{(.*)\}/i';
 
-		$content = preg_replace_callback($include_pattern, array($this, 'getModule'), $content);
+		/* Include modules by [[module]] */
+		$content = preg_replace_callback($module_pattern, array($this, 'getModule'), $content);
 
 		preg_match($data_store_pattern, $content, $data_store_matches);
 
+		/* Define data store with ##datastore## */
 		if (count($data_store_matches) > 0) {
 			$data_store_name = $data_store_matches[1];
 			$content = str_replace("##" . $data_store_name . "##", "", $content);
@@ -88,16 +90,35 @@ class Akashic {
 			$data_store = json_decode($data_store_content);
 		}
 
+		/* Define data variables with ${variable} */
 		preg_match_all($data_variable_pattern, $content, $data_vars_matches);
 
 		if (count($data_vars_matches) > 0) {
-			$data = $data_vars_matches[1];
+			$data_vars = $data_vars_matches[1];
 
-			foreach ($data as $var) {
-				$content = str_replace("\${" . $var . "}", $data_store->$var, $content);
+			foreach ($data_vars as $data_var) {
+				if (!isset($data_store->$data_var)) {
+					continue;
+				}
+
+				$data_store_val = $data_store->$data_var;
+
+				if (is_array($data_store_val)) {
+					$array_content = "";
+
+					foreach ($data_store_val as $data_item) {
+						$array_content .= $data_item->name;
+					}
+
+					$content = str_replace("\${" . $data_var . "}", $array_content, $content);
+				}
+				else {
+					$content = str_replace("\${" . $data_var . "}", $data_store_val, $content);
+				}
 			}
 		}
 
+		/* Define template with @{template} and the content inside template with ${content} */
 		preg_match($template_pattern, $content, $template_matches);
 
 		if (count($template_matches) > 0) {
