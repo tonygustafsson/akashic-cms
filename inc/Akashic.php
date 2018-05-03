@@ -76,6 +76,7 @@ class Akashic {
 		$template_pattern = '/\@\{(.*)\}/i';
 		$data_store_pattern = '/\#\#(.*)\#\#/i';
 		$data_variable_pattern = '/\$\{(.*)\}/i';
+		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/i';
 
 		/* Include modules by [[module]] */
 		$content = preg_replace_callback($module_pattern, array($this, 'getModule'), $content);
@@ -116,6 +117,22 @@ class Akashic {
 					$content = str_replace("\${" . $data_var . "}", $data_store_val, $content);
 				}
 			}
+		}
+
+		/* Define foreaches with [foreach data: <html>] */
+		preg_match_all($foreach_pattern, $content, $foreach_matches);
+
+		if (count($foreach_matches) > 0) {
+			$data = trim($foreach_matches[1][0]);
+			$html = trim($foreach_matches[2][0]);
+
+			preg_match_all($data_variable_pattern, $html, $foreach_data_vars_matches);
+
+			foreach ($foreach_data_vars_matches as $match) {
+				$html = str_replace($match[0], "kaka", $html);
+			}
+
+			$content = str_replace($foreach_pattern, $html, $content);
 		}
 
 		/* Define template with @{template} and the content inside template with ${content} */

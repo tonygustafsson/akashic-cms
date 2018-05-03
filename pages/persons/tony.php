@@ -4,6 +4,6 @@
 
 <p>The creator of this awesome CMS!</p>
 
-[[books/huckleberry/huckleberry]]
-
-[[person, test]]
+[foreach ${persons}:
+	<li>${name} is ${age} years old</li>
+]
