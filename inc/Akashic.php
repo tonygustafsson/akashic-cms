@@ -75,8 +75,9 @@ class Akashic {
 		$module_pattern = '/\[\[(.*)\]\]/i';
 		$template_pattern = '/\@\{(.*)\}/i';
 		$data_store_pattern = '/\#\#(.*)\#\#/i';
-		$data_variable_pattern = '/\$\{(.*)\}/i';
 		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/i';
+		
+		$data_store_name = "";
 
 		/* Include modules by [[module]] */
 		$content = preg_replace_callback($module_pattern, array($this, 'getModule'), $content);
@@ -91,7 +92,41 @@ class Akashic {
 			$data_store = json_decode($data_store_content);
 		}
 
+		/* Define foreaches with [foreach data: <html>] */
+		preg_match_all($foreach_pattern, $content, $foreach_matches);
+
+		if (count($foreach_matches[1]) > 0 && count($foreach_matches[2])) {
+			$data = trim($foreach_matches[1][0]);
+			$html = trim($foreach_matches[2][0]);
+
+			$new_html = $this->replace_data_vars($html, $data);
+			$content = preg_replace($foreach_pattern, $new_html, $content);
+		}
+
 		/* Define data variables with ${variable} */
+		$content = $this->replace_data_vars($content, $data_store_name);
+
+		/* Define template with @{template} and the content inside template with ${content} */
+		preg_match($template_pattern, $content, $template_matches);
+
+		if (count($template_matches) > 0) {
+			// Has template, include content inside template
+			$templateName = $template_matches[1];
+			$templateContent = $this->getTemplate($templateName);
+			
+			$content = str_replace("@{" . $templateName . "}", "", $content);
+			$content = str_replace("@{content}", $content, $templateContent);
+		}
+
+		return $content;
+	}
+
+	private function replace_data_vars($content = '', $data_store_name) {
+		/* Define data variables with ${variable} */
+		$data_variable_pattern = '/\$\{(.*)\}/i';
+		$data_store_content = $this->getFileContent('data/' . $data_store_name . '.json');
+		$data_store = json_decode($data_store_content);
+
 		preg_match_all($data_variable_pattern, $content, $data_vars_matches);
 
 		if (count($data_vars_matches) > 0) {
@@ -117,34 +152,6 @@ class Akashic {
 					$content = str_replace("\${" . $data_var . "}", $data_store_val, $content);
 				}
 			}
-		}
-
-		/* Define foreaches with [foreach data: <html>] */
-		preg_match_all($foreach_pattern, $content, $foreach_matches);
-
-		if (count($foreach_matches) > 0) {
-			$data = trim($foreach_matches[1][0]);
-			$html = trim($foreach_matches[2][0]);
-
-			preg_match_all($data_variable_pattern, $html, $foreach_data_vars_matches);
-
-			foreach ($foreach_data_vars_matches as $match) {
-				$html = str_replace($match[0], "kaka", $html);
-			}
-
-			$content = str_replace($foreach_pattern, $html, $content);
-		}
-
-		/* Define template with @{template} and the content inside template with ${content} */
-		preg_match($template_pattern, $content, $template_matches);
-
-		if (count($template_matches) > 0) {
-			// Has template, include content inside template
-			$templateName = $template_matches[1];
-			$templateContent = $this->getTemplate($templateName);
-			
-			$content = str_replace("@{" . $templateName . "}", "", $content);
-			$content = str_replace("@{content}", $content, $templateContent);
 		}
 
 		return $content;
