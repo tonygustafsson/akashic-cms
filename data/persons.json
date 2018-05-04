@@ -1,19 +1,17 @@
-{
-    "persons": [
-        {
-            "name": "Tony Gustafsson",
-            "age": 35,
-            "occupation": "Frontend Developer"
-        },
-        {
-            "name": "Sara Carlson",
-            "age": 30,
-            "occupation": "MyWay" 
-        },
-        {
-            "name": "Benny Wendel",
-            "age": 64,
-            "occupation": "Isoleringstekniker"
-        }
-    ]
-}
+[
+    {
+        "name": "Tony Gustafsson",
+        "age": 35,
+        "occupation": "Frontend Developer"
+    },
+    {
+        "name": "Sara Carlson",
+        "age": 30,
+        "occupation": "Sales person" 
+    },
+    {
+        "name": "Benny Wendel",
+        "age": 64,
+        "occupation": "Isoleringstekniker"
+    }
+]

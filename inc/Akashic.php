@@ -78,6 +78,7 @@ class Akashic {
 		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/i';
 		
 		$data_store_name = "";
+		$data_store = array();
 
 		/* Include modules by [[module]] */
 		$content = preg_replace_callback($module_pattern, array($this, 'getModule'), $content);
@@ -98,13 +99,20 @@ class Akashic {
 		if (count($foreach_matches[1]) > 0 && count($foreach_matches[2])) {
 			$data = trim($foreach_matches[1][0]);
 			$html = trim($foreach_matches[2][0]);
+			$new_html = "";
 
-			$new_html = $this->replace_data_vars($html, $data);
+			$foreach_data_store_content = $this->getFileContent('data/' . $data . '.json');
+			$foreach_data_store = json_decode($foreach_data_store_content);
+
+			foreach ($foreach_data_store as $this_data_store) {
+				$new_html .= $this->replace_data_vars($html, $this_data_store);
+			}
+
 			$content = preg_replace($foreach_pattern, $new_html, $content);
 		}
 
 		/* Define data variables with ${variable} */
-		$content = $this->replace_data_vars($content, $data_store_name);
+		$content = $this->replace_data_vars($content, $data_store);
 
 		/* Define template with @{template} and the content inside template with ${content} */
 		preg_match($template_pattern, $content, $template_matches);
@@ -121,11 +129,9 @@ class Akashic {
 		return $content;
 	}
 
-	private function replace_data_vars($content = '', $data_store_name) {
+	private function replace_data_vars($content = '', $data_store) {
 		/* Define data variables with ${variable} */
-		$data_variable_pattern = '/\$\{(.*)\}/i';
-		$data_store_content = $this->getFileContent('data/' . $data_store_name . '.json');
-		$data_store = json_decode($data_store_content);
+		$data_variable_pattern = '/\$\{([a-z0-9]+)\}/i';
 
 		preg_match_all($data_variable_pattern, $content, $data_vars_matches);
 

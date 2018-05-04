@@ -6,5 +6,5 @@
 <p>The creator of this ${name} CMS!</p>
 
 [foreach ${persons}:
-	<li>${name} is ${age} years old</li>
+	<li>${name} is ${age} years old and is working as a ${occupation}.</li>
 ]
