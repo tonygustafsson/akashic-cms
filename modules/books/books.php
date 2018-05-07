@@ -2,5 +2,5 @@
 
 <p>This is a module.</p>
 
-[[books/huckleberry/huckleberry]]
+[module: books/huckleberry/huckleberry]
 

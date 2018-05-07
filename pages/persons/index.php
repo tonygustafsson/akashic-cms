@@ -1,4 +1,4 @@
-@{default}
+[template: default]
 ##persons##
 
 <h1>List of persons</h1>

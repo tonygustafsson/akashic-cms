@@ -3,7 +3,7 @@
 class AkashicModule {
     public function __construct($akashic) {
 		$this->akashic = $akashic;
-		$this->module_pattern = '/\[\[(.*)\]\]/i';
+		$this->module_pattern = '/\[module: (.*)\]/i';
 	}
 	
 	public function load($content) {
