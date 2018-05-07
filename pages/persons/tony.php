@@ -1,4 +1,4 @@
-@{default}
+[template: default]
 ##test##
 
 <h1>Tony Gustafsson</h1>

@@ -3,7 +3,8 @@
 class AkashicTemplate {
     public function __construct($akashic) {
 		$this->akashic = $akashic;
-		$this->template_pattern = '/\@\{(.*)\}/i';
+		$this->template_pattern = '/\[template: (.*)\]/i';
+		$this->content_pattern = '/\[content\]/i';
     }
 
 	public function load($content) {
@@ -15,8 +16,8 @@ class AkashicTemplate {
 			$templateName = $template_matches[1];
 			$templateContent = $this->get($templateName);
 			
-			$content = str_replace("@{" . $templateName . "}", "", $content);
-			$content = str_replace("@{content}", $content, $templateContent);
+			$content = preg_replace($this->template_pattern, "", $content);
+			$content = preg_replace($this->content_pattern, $content, $templateContent);
 		}
 
 		return $content;
