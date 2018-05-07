@@ -1,5 +1,5 @@
 [template: default]
-##persons##
+[data: persons]
 
 <h1>List of persons</h1>
 

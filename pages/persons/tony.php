@@ -1,5 +1,5 @@
 [template: default]
-##test##
+[data: test]
 
 <h1>Tony Gustafsson</h1>
 
