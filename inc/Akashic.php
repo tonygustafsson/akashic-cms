@@ -75,7 +75,7 @@ class Akashic {
 		$module_pattern = '/\[\[(.*)\]\]/i';
 		$template_pattern = '/\@\{(.*)\}/i';
 		$data_store_pattern = '/\#\#(.*)\#\#/i';
-		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/i';
+		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/s';
 		
 		$data_store_name = "";
 		$data_store = array();
