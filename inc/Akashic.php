@@ -16,7 +16,25 @@ class Akashic {
 		$this->module = new AkashicModule($this);
 		$this->template = new AkashicTemplate($this);
 
-		$content = $this->page->get();
-		echo $content;
+		if (count($this->url_segments) == 0) {
+			// Start page
+			$content = $this->file->getContent($this->settings->start_page);
+		}
+		else if (file_exists("pages/" . $this->url_path . "/index.php")) {
+			// Special page, index.php
+			$content = $this->file->getContent("pages/" . $this->url_path . "/index.php");
+		}
+		else if (file_exists("pages/" . $this->url_path . ".php")) {
+			// Special page, directly to php
+			$content = $this->file->getContent("pages/" . $this->url_path . ".php");
+		}
+		else {
+			$content = $this->file->getContent($this->settings->not_found_page);
+		}
+		
+		$content = $this->template->load($content);
+		$content = $this->module->load($content);
+
+		echo $this->page->processPageLogic($content);
 	}
 }

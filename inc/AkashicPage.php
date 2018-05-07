@@ -4,40 +4,13 @@ class AkashicPage {
     public function __construct($akashic) {
         $this->akashic = $akashic;
     }
-
-	public function get() {
-		if (count($this->akashic->url_segments) == 0) {
-			// Start page
-			$content = $this->akashic->file->getContent($this->akashic->settings->start_page);
-			return $this->processPageLogic($content);
-		}
-		else if (file_exists("pages/" . $this->akashic->url_path . "/index.php")) {
-			// Special page, index.php
-			$content = $this->akashic->file->getContent("pages/" . $this->akashic->url_path . "/index.php");
-			return $this->processPageLogic($content);				
-		}
-		else if (file_exists("pages/" . $this->akashic->url_path . ".php")) {
-			// Special page, directly to php
-			$content = $this->akashic->file->getContent("pages/" . $this->akashic->url_path . ".php");
-			return $this->processPageLogic($content);	
-		}
-		else {
-			$content = $this->akashic->file->getContent($this->akashic->settings->not_found_page);
-			return $this->processPageLogic($content);
-		}
-    }
     
 	public function processPageLogic($content) {
-		$module_pattern = '/\[\[(.*)\]\]/i';
-		$template_pattern = '/\@\{(.*)\}/i';
 		$data_store_pattern = '/\#\#(.*)\#\#/i';
 		$foreach_pattern = '/\[foreach \$\{(.*)\}:(?:\r|\n)+(.*)(?:\r|\n)+\]/s';
 		
 		$data_store_name = "";
 		$data_store = array();
-
-		/* Include modules by [[module]] */
-		$content = preg_replace_callback($module_pattern, array($this->akashic->module, 'get'), $content);
 
 		preg_match($data_store_pattern, $content, $data_store_matches);
 
@@ -69,18 +42,6 @@ class AkashicPage {
 
 		/* Define data variables with ${variable} */
 		$content = $this->replace_data_vars($content, $data_store);
-
-		/* Define template with @{template} and the content inside template with ${content} */
-		preg_match($template_pattern, $content, $template_matches);
-
-		if (count($template_matches) > 0) {
-			// Has template, include content inside template
-			$templateName = $template_matches[1];
-			$templateContent = $this->akashic->template->get($templateName);
-			
-			$content = str_replace("@{" . $templateName . "}", "", $content);
-			$content = str_replace("@{content}", $content, $templateContent);
-		}
 
 		return $content;
 	}
