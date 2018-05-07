@@ -4,6 +4,13 @@
 
 Not for production yet.
 
+Are you stuck with old fashion web hotels too? Stuck delivering php and mysql to old customers who are not interested in being awesome? Me too.
+
+Let's build something that will work for these customers. Where you can code freely and without limits, and still let the customer be in charge, such as language aware content.
+
+What if the customer could edit the data stores, and not eff up the HTML?
+What if the HTML would not look like crap just because it were dynamically generated?
+
 ## Pages
 
 A routing system is included. All landing pages should exist in ./pages
