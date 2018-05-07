@@ -11,6 +11,10 @@ Let's build something that will work for these customers. Where you can code fre
 What if the customer could edit the data stores, and not eff up the HTML?
 What if the HTML would not look like crap just because it were dynamically generated?
 
+I've built so many wordpress and woocommerce sites where I totally lost control over the code and were dependent on plugins, which
+where developed by bunglers like me. I've built so many custom made sites in PHP and built myself into a corner because of
+changes in plans and customer wantings. I need something that I'm in control of that make development fast.
+
 ## Pages
 
 A routing system is included. All landing pages should exist in ./pages
