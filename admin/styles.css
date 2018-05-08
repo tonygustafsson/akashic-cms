@@ -1,0 +1,19 @@
+body {
+    width: 80%;
+    margin: 0 10%;
+    font-family: "Bree Serif", serif;
+}
+
+label {
+    display: block;
+    margin-top: 1em;
+}
+
+input, select {
+    width: 25%;
+}
+
+button {
+    margin-top: 1em;
+    display: block;
+}
