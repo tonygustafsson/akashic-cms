@@ -2,6 +2,7 @@
 require_once("settings.php");
 require_once("./inc/AkashicFile.php");
 require_once("./inc/AkashicModule.php");
+require_once("./inc/AkashicLink.php");
 require_once("./inc/AkashicTemplate.php");
 require_once("./inc/AkashicData.php");
 
@@ -13,6 +14,7 @@ class Akashic {
 
 		$this->file = new AkashicFile($this);
 		$this->module = new AkashicModule($this);
+		$this->link = new AkashicLink($this);
 		$this->template = new AkashicTemplate($this);
 		$this->data = new AkashicData($this);
 
@@ -34,6 +36,7 @@ class Akashic {
 
 		$content = $this->template->load($content);
 		$content = $this->module->load($content);
+		$content = $this->link->load($content);
 		$content = $this->data->foreach->load($content);
 		$content = $this->data->vars->load($content);
 	}
