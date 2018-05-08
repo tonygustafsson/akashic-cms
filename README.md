@@ -51,6 +51,11 @@ You can access data stores and loop through them with
 
 It would then get ./data/persons.json and get the name and age from this file.
 
+## Links
+
+To be able to link to a specific page, no matter the domain or URL we can use [link: start]
+to get ./pages/start.php or [link: path/subpath/test] to get the url to ./pages/path/subpath/test.php.
+
 ## Settings
 
 Edit global settings in ./settings.php.
