@@ -26,6 +26,10 @@
                         case "select":
                             formHtml += "<select";
                             break;
+                        case "range":
+                            formHtml += `<div id="range-value-akashic-${fieldName}">${field.default}/${field.maxValue}</div>`;
+                            formHtml += "<input";
+                            break;
                         default:
                             formHtml += "<input";
                     }
@@ -69,6 +73,9 @@
                         case "number":
                             formHtml += ` type="number" `;
                             break;
+                        case "password":
+                            formHtml += ` type="password" `;
+                            break;
                         case "checkbox":
                             formHtml += ` type="checkbox" ${field.default && field.default === true ? ' checked ' : ''} `;
                             break;
@@ -110,11 +117,11 @@
                 formHtml += `<button type="submit">${json.createSubmitTitle}</button>`;
             }
 
-            console.log(formHtml);
-
             return formHtml;
         })
         .then(formHtml => {
             form.innerHTML = formHtml;
+
+            document.dispatchEvent(new CustomEvent("FormCreated"));
         });
 })();

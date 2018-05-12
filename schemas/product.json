@@ -42,6 +42,15 @@
 					"required": true,
 					"languageDependent": false
 				},
+				"password": {
+					"title": "Password",
+					"placeholder": "Password for product",
+					"type": "string",
+					"formType": "password",
+					"maxLength": 100,
+					"minLength": 2,
+					"required": true
+				},
 				"description": {
 					"title": "Description",
 					"type": "string",
