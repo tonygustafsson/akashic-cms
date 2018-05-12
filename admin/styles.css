@@ -4,6 +4,12 @@ body {
     font-family: "Bree Serif", serif;
 }
 
+fieldset {
+    margin: 1em 0;
+    border: 1px #ccc solid;
+    width: 50%;
+}
+
 label {
     display: block;
     margin-top: 1em;
@@ -16,7 +22,7 @@ input[type=number],
 input[type=range],
 select,
 textarea {
-    width: 50%;
+    width: 100%;
     padding: .2em .5em;
     font-size: 120%;
 }

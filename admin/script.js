@@ -6,109 +6,115 @@
             return response.json();
         })
         .then(json => {
-            let formInfo = "";
+            let formHtml = "";
 
-            Object.keys(json.fields).forEach(field => {
-                let fieldHtml = "",
-                    settings = json.fields[field];
+            Object.keys(json.fieldsets).forEach(fieldsetName => {
+                let fieldset = json.fieldsets[fieldsetName];
 
-                fieldHtml += `<label for="akashic-${field}">${settings.title}</label>`;
+                formHtml += "<fieldset>";
+                formHtml += `<legend>${fieldset.title}</legend>`;
 
-                switch (settings.formType) {
-                    case "textarea":
-                        fieldHtml += "<textarea";
-                        break;
-                    case "select":
-                        fieldHtml += "<select";
-                        break;
-                    default:
-                        fieldHtml += "<input";
-                }
+                Object.keys(fieldset.fields).forEach(fieldName => {
+                    let field = fieldset.fields[fieldName];
 
-                fieldHtml += ` name="akashic-${field}" `;
-                fieldHtml += ` id="akashic-${field}" `;
+                    formHtml += `<label for="akashic-${fieldName}">${field.title}</label>`;
 
-                if (settings.required) {
-                    fieldHtml += ` required `;
-                }
+                    switch (field.formType) {
+                        case "textarea":
+                            formHtml += "<textarea";
+                            break;
+                        case "select":
+                            formHtml += "<select";
+                            break;
+                        default:
+                            formHtml += "<input";
+                    }
+    
+                    formHtml += ` name="akashic-${fieldName}" `;
+                    formHtml += ` id="akashic-${fieldName}" `;
+    
+                    if (field.required) {
+                        formHtml += ` required `;
+                    }
+    
+                    if (field.className) {
+                        formHtml += ` class="${field.className}" `;
+                    }
+    
+                    if (field.minLength) {
+                        formHtml += ` minlength="${field.minLength}" `;
+                    }
+    
+                    if (field.maxLength) {
+                        formHtml += ` maxlength="${field.maxLength}" `;
+                    }
+    
+                    if (field.minValue) {
+                        formHtml += ` min="${field.minValue}" `;
+                    }
+    
+                    if (field.maxValue) {
+                        formHtml += ` max="${field.maxValue}" `;
+                    }
+    
+                    if (field.default && field.formType != "checkbox" && field.formType != "select") {
+                        formHtml += ` value="${field.default}" `;
+                    }
+    
+                    if (field.placeholder) {
+                        formHtml += ` placeholder="${field.placeholder}" `;
+                    }
+    
+                    switch (field.formType) {
+                        case "number":
+                            formHtml += ` type="number" `;
+                            break;
+                        case "checkbox":
+                            formHtml += ` type="checkbox" ${field.default && field.default === true ? ' checked ' : ''} `;
+                            break;
+                        case "textarea":
+                            break;
+                        case "select":
+                            formHtml += ">";
+                            break;
+                        case "range":
+                            formHtml += ` type="range" `;
+                            break;
+                        default:
+                            formHtml += ` type="text" `;
+                    }
+    
+                    switch (field.formType) {
+                        case "textarea":
+                            formHtml += `>${field.default}`;
+                            formHtml += "</textarea>";
+                            break;
+                        case "select":
+                            if (field.values) {
+                                field.values.forEach(val => {
+                                    formHtml += `<option value="${val}" ${val == field.default ? 'selected': ''}>${val}</option>`;
+                                });
+                            }
+    
+                            formHtml += "</select>";
+                            break;
+                        default:
+                            formHtml += "/>";
+                    }
+                });
 
-                if (settings.className) {
-                    fieldHtml += ` class="${settings.className}" `;
-                }
-
-                if (settings.minLength) {
-                    fieldHtml += ` minlength="${settings.minLength}" `;
-                }
-
-                if (settings.maxLength) {
-                    fieldHtml += ` maxlength="${settings.maxLength}" `;
-                }
-
-                if (settings.minValue) {
-                    fieldHtml += ` min="${settings.minValue}" `;
-                }
-
-                if (settings.maxValue) {
-                    fieldHtml += ` max="${settings.maxValue}" `;
-                }
-
-                if (settings.default && settings.formType != "checkbox" && settings.formType != "select") {
-                    fieldHtml += ` value="${settings.default}" `;
-                }
-
-                if (settings.placeholder) {
-                    fieldHtml += ` placeholder="${settings.placeholder}" `;
-                }
-
-                switch (settings.formType) {
-                    case "number":
-                        fieldHtml += ` type="number" `;
-                        break;
-                    case "checkbox":
-                        fieldHtml += ` type="checkbox" ${settings.default && settings.default === true ? ' checked ' : ''} `;
-                        break;
-                    case "textarea":
-                        break;
-                    case "select":
-                        fieldHtml += ">";
-                        break;
-                    case "range":
-                        fieldHtml += ` type="range" `;
-                        break;
-                    default:
-                        fieldHtml += ` type="text" `;
-                }
-
-                switch (settings.formType) {
-                    case "textarea":
-                        fieldHtml += `>${settings.default}`;
-                        fieldHtml += "</textarea>";
-                        break;
-                    case "select":
-                        if (settings.values) {
-                            settings.values.forEach(val => {
-                                fieldHtml += `<option value="${val}" ${val == settings.default ? 'selected': ''}>${val}</option>`;
-                            });
-                        }
-
-                        fieldHtml += "</select>";
-                        break;
-                    default:
-                        fieldHtml += "/>";
-                }
-
-                formInfo += fieldHtml;
+                formHtml += "</fieldset>";
             });
 
-            console.log(formInfo);
-
             if (json.createSubmitTitle) {
-                formInfo += `<button type="submit">${json.createSubmitTitle}</button>`;
+                formHtml += `<button type="submit">${json.createSubmitTitle}</button>`;
             }
 
-            return formInfo;
+            console.log(formHtml);
+
+            return formHtml;
         })
-        .then(formInfo => {
-            form.innerHTML = formInfo;
+        .then(formHtml => {
+            form.innerHTML = formHtml;
         });
 })();
