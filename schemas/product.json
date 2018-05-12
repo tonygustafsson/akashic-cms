@@ -1,0 +1,62 @@
+{
+	"createSubmitTitle": "Save product",
+	"fields": {
+		"title": {
+			"title": "Title",
+			"placeholder": "Add a placeholder here...",
+			"type": "string",
+			"formType": "text",
+			"maxLength": 100,
+			"minLength": 2,
+			"required": true,
+			"languageDependent": true,
+			"className": "cool-field"
+		},
+		"category": {
+			"title": "Category",
+			"type": "string",
+			"formType": "select",
+			"languageDependent": true,
+			"values": [
+				"Airplain", "Bike", "Car", "Boat"
+			],
+			"default": "Boat"
+		},
+		"stock": {
+			"title": "Stock value",
+			"type": "number",
+			"formType": "number",
+			"minValue": 1,
+			"maxValue": 20,
+			"default": 10,
+			"required": false,
+			"languageDependent": false
+		},
+		"daysToDelivery": {
+			"title": "Days to delivery?",
+			"type": "string",
+			"formType": "range",
+			"minValue": 1,
+			"maxValue": 10,
+			"default": 2,
+			"required": true
+		},
+		"visibility": {
+			"title": "Visible?",
+			"type": "bool",
+			"formType": "checkbox",
+			"default": true,
+			"required": true,
+			"languageDependent": false
+		},
+		"description": {
+			"title": "Description",
+			"type": "string",
+			"formType": "textarea",
+			"maxLength": 500,
+			"required": false,
+			"languageDependent": true,
+			"default": "Cool description yo"
+		}
+	}
+}
