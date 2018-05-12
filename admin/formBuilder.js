@@ -1,6 +1,21 @@
 (function () {
     let form = document.getElementById('products');
 
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+
+        fetch(form.action, {
+            method: 'post',
+            body: new FormData(form)
+        })
+        .then(response => {
+            return response.json();
+        })
+        .then(response => {
+            console.log(response);
+        });
+    });
+
     fetch('../schemas/product.json')
         .then(response => {
             return response.json();
@@ -38,7 +53,7 @@
                     formHtml += ` id="akashic-${fieldName}" `;
     
                     if (field.required) {
-                        formHtml += ` required `;
+                        //formHtml += ` required `;
                     }
     
                     if (field.className) {
@@ -46,19 +61,19 @@
                     }
     
                     if (field.minLength) {
-                        formHtml += ` minlength="${field.minLength}" `;
+                        //formHtml += ` minlength="${field.minLength}" `;
                     }
     
                     if (field.maxLength) {
-                        formHtml += ` maxlength="${field.maxLength}" `;
+                        //formHtml += ` maxlength="${field.maxLength}" `;
                     }
     
                     if (field.minValue) {
-                        formHtml += ` min="${field.minValue}" `;
+                        //formHtml += ` min="${field.minValue}" `;
                     }
     
                     if (field.maxValue) {
-                        formHtml += ` max="${field.maxValue}" `;
+                        //formHtml += ` max="${field.maxValue}" `;
                     }
     
                     if (field.default && field.formType != "checkbox" && field.formType != "select") {
